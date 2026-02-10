@@ -6,9 +6,9 @@ import {  provideEchartsCore } from 'ngx-echarts';
 import * as echarts from 'echarts/core';
 // import necessary echarts components
 import { BarChart } from 'echarts/charts';
-import { GridComponent } from 'echarts/components';
+import { GridComponent, LegendComponent, TitleComponent, TooltipComponent } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
-echarts.use([BarChart, GridComponent, CanvasRenderer]);
+echarts.use([BarChart, GridComponent, CanvasRenderer, LegendComponent, TitleComponent, TooltipComponent]);
 
 @Component({
   selector: 'app-root',
