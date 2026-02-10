@@ -10,7 +10,7 @@ import type { EChartsOption } from 'echarts';
   styleUrl: './dashboard.css',
 })
 export class Dashboard {
-  chartOption: EChartsOption = {
+  stackedBarChartOption: EChartsOption = {
     // title: {
     //   text: 'Monthly Sales (Stacked Bar)',
     //   left: 'center',
@@ -28,17 +28,18 @@ export class Dashboard {
     },
 
     legend: {
-      top: 10,
-      right:10,
+      bottom: 0,
+      left:'center',
       orient: 'horizontal',
       icon:'circle'
       // data:['Accepted']
     },
 
     grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '3%',
+      top:10,
+      left: 10,
+      right: 10,
+      bottom: 40,
       containLabel: true
     },
 
@@ -159,4 +160,89 @@ export class Dashboard {
     ]
   };
 
+  groupedBarChartOption: EChartsOption = {
+    // title: {
+    //   text: 'Monthly Sales (Stacked Bar)',
+    //   left: 'center',
+      
+    // },
+
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'shadow',
+        // shadowStyle:{
+        //   width:'30%'
+        // }
+      }
+    },
+
+    legend: {
+      bottom: 0,
+      left:'center',
+      orient: 'horizontal',
+      icon:'circle'
+      // data:['Accepted']
+    },
+
+    grid: {
+      top:10,
+      left: 10,
+      right: 10,
+      bottom: 40,
+      containLabel: true
+    },
+
+    xAxis: {
+      type: 'category',
+      data: ['Jan', 'Feb', 'Mar', 'Apr', 'May']
+    },
+
+    yAxis: {
+      type: 'value',
+      axisLine: { show: true },
+      axisTick: { show: false }
+    },
+
+    series: [
+
+      {
+        name: 'Reprocess',
+        type: 'bar',      
+        barMinWidth: 30,
+        barWidth:20,
+        barMaxWidth: 40,
+        barCategoryGap:'30%',
+        emphasis: { focus: 'self' },
+        label: {
+          show: true,
+          position: 'top',
+          fontSize: 12,
+          color: '#000',
+          // fontWeight: 400
+        },
+        // labelLayout: { hideOverlap: true },
+        data: [60, 100, 90, 140, 130],
+        itemStyle: { color: '#9F0000' ,borderRadius:[8,8,0,0]}
+      },
+      {
+        name: 'Rescan',
+        type: 'bar',
+        barMinWidth: 30,
+        barWidth:20,
+        barMaxWidth: 40,
+        barCategoryGap:'30%',
+        emphasis: { focus: 'self' },
+        label: {
+          show: true,
+          position: 'top',
+          fontSize: 12,
+          color: '#000'
+        },
+        data: [180, 220, 160, 190, 210],
+        itemStyle: { color: '#EB6A6A', borderRadius:[8,8,0,0] }
+      },
+
+    ]
+  };
 }
