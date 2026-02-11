@@ -260,7 +260,7 @@ export class Dashboard {
 
     ]
   };
-  pieChartOption:EChartsOption={
+  halfDoughnutRoseChartOption:EChartsOption={
     tooltip:{
       trigger:'item',
       // axisPointer:{
@@ -286,8 +286,12 @@ export class Dashboard {
       {
         name:'Overall Analysis',
         type:'pie',
-        radius:['30%','70%'],
+        roseType: 'radius',
+        radius:['20%','90%'],
+        center: ['50%', '80%'],
         avoidLabelOverlap: false,
+        startAngle: 180,
+        endAngle: 360,
         itemStyle:{
           borderRadius:8,
           borderColor:'#fff',
@@ -300,14 +304,116 @@ export class Dashboard {
           {name:'Rescan', value:this.sum('rescan'),itemStyle:{color:this.colors.rescan}},
           {name:'Failed', value:this.sum('failed'),itemStyle:{color:this.colors.failed}},
           {name:'Not Analyzed', value:this.sum('notAnalyzed'),itemStyle:{color:this.colors.notAnalyzed}},
+        ].sort(function (a, b) {
+          return a.value - b.value;
+        })
 
+      }
+
+    ]
+  }
+  fullDoughnutRoseChartOption:EChartsOption={
+    tooltip:{
+      trigger:'item',
+      // axisPointer:{
+      //   type:'shadow'
+      // },
+    },
+    legend: {
+      bottom: 0,
+      left:'center',
+      orient: 'horizontal',
+      icon:'circle'
+      // data:['Accepted']
+    },
+    grid: {
+      top:10,
+      left: 10,
+      right: 10,
+      bottom: 40,
+      containLabel: true
+    },
+
+    series:[
+      {
+        name:'Overall Analysis',
+        type:'pie',
+        roseType: 'radius',
+        radius: '60%',
+        center: ['50%', '50%'],
+        avoidLabelOverlap: false,
+        // startAngle: 180,
+        // endAngle: 360,
+        itemStyle:{
+          // borderRadius:8,
+          borderColor:'#fff',
+          borderWidth:2
+        },
+        label:{show:true, formatter: '{b}: {c}'},
+        data:[
+          {name:'Accepted', value:this.sum('accepted'),itemStyle:{color:this.colors.accepted}},
+          {name:'Reprocess', value:this.sum('reprocess'),itemStyle:{color:this.colors.reprocess}},
+          {name:'Rescan', value:this.sum('rescan'),itemStyle:{color:this.colors.rescan}},
+          {name:'Failed', value:this.sum('failed'),itemStyle:{color:this.colors.failed}},
+          {name:'Not Analyzed', value:this.sum('notAnalyzed'),itemStyle:{color:this.colors.notAnalyzed}},
+        ].sort(function (a, b) {
+          return a.value - b.value;
+        })
+
+      }
+
+    ]
+  }
+  fullDoughnutChartOption:EChartsOption={
+    tooltip:{
+      trigger:'item',
+      // axisPointer:{
+      //   type:'shadow'
+      // },
+    },
+    legend: {
+      bottom: 0,
+      left:'center',
+      orient: 'horizontal',
+      icon:'circle'
+      // data:['Accepted']
+    },
+    grid: {
+      top:10,
+      left: 10,
+      right: 10,
+      bottom: 40,
+      containLabel: true
+    },
+
+    series:[
+      {
+        name:'Overall Analysis',
+        type:'pie',
+        // roseType: 'radius',
+        radius:['40%','70%'],
+        // center: ['50%', '80%'],
+        avoidLabelOverlap: false,
+        // startAngle: 180,
+        // endAngle: 360,
+        itemStyle:{
+          borderRadius:8,
+          borderColor:'#fff',
+          borderWidth:2
+        },
+        label:{show:true, formatter: '{b}: {c}'},
+        data:[
+          {name:'Accepted', value:this.sum('accepted'),itemStyle:{color:this.colors.accepted}},
+          {name:'Reprocess', value:this.sum('reprocess'),itemStyle:{color:this.colors.reprocess}},
+          {name:'Rescan', value:this.sum('rescan'),itemStyle:{color:this.colors.rescan}},
+          {name:'Failed', value:this.sum('failed'),itemStyle:{color:this.colors.failed}},
+          {name:'Not Analyzed', value:this.sum('notAnalyzed'),itemStyle:{color:this.colors.notAnalyzed}},
         ]
 
       }
 
     ]
   }
-
   private sum(key:string):number {  
     const arr = this.imageInfo[key] ?? [];
     if(key in this.sumCache && this.sumCache[key] !== undefined) return this.sumCache[key];
