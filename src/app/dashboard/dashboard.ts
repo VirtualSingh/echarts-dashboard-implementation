@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NgxEchartsDirective } from 'ngx-echarts';
 import { CommonModule } from '@angular/common';
 import type { EChartsOption } from 'echarts';
+import { scatterData } from './scatterData';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,7 +18,7 @@ export class Dashboard {
     failed:[120, 145, 23, 48, 90],
     notAnalyzed:[127, 44, 72, 69, 86]
   }
-  colors={
+  colors:any={
     accepted:'#3594CC',
     reprocess:'#9F0000',
     rescan:'#EB6A6A',
@@ -421,4 +422,43 @@ export class Dashboard {
     this.sumCache[key] = sum
     return sum;  
   }
+  bubbleChartOption:EChartsOption={
+    tooltip:{
+      trigger:'item'
+    },
+    grid: {
+      left: 10,
+      right: 10,
+      top:20,
+      // bottom: 15
+    },    
+    legend:{
+      data: ['accepted', 'failed', 'rescan', 'reprocess', 'notAnalyzed']
+    },
+    xAxis:{
+      type:'value',
+      axisTick:{show:false}
+    },
+    yAxis:{
+      axisTick:{show:false},
+      type:'value',
+      interval: 500
+    },
+    series:this.getScatterSeries()
+  }
+
+  getScatterSeries() {
+    return Object.keys(this.colors).map(status => ({
+      name: status,
+      type: 'scatter' as const,
+      symbolSize: 10,
+      itemStyle: {
+        color: this.colors[status]
+      },
+      data: scatterData
+        .filter(point => point.status === status)
+        .map(point => point.value)
+    }));
+  }
+  
 }
