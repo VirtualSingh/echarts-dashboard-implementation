@@ -10,6 +10,21 @@ import type { EChartsOption } from 'echarts';
   styleUrl: './dashboard.css',
 })
 export class Dashboard {
+  imageInfo:any={
+    accepted:[120, 200, 150, 80, 70],
+    reprocess:[60, 100, 90, 140, 130],
+    rescan:[180, 220, 160, 190, 210],
+    failed:[120, 145, 23, 48, 90],
+    notAnalyzed:[127, 44, 72, 69, 86]
+  }
+  colors={
+    accepted:'#3594CC',
+    reprocess:'#9F0000',
+    rescan:'#EB6A6A',
+    failed:'red',
+    notAnalyzed:'#B2B1BD'
+  }
+  private sumCache: Record<string, number> = {};
   stackedBarChartOption: EChartsOption = {
     // title: {
     //   text: 'Monthly Sales (Stacked Bar)',
@@ -71,7 +86,7 @@ export class Dashboard {
           color: '#fff',
 
         },
-        data: [120, 200, 150, 80, 70],
+        data: this.imageInfo.accepted,
         itemStyle: { color: '#3594CC' }
       },
       {
@@ -91,7 +106,7 @@ export class Dashboard {
           // fontWeight: 400
         },
         // labelLayout: { hideOverlap: true },
-        data: [60, 100, 90, 140, 130],
+        data: this.imageInfo.reprocess,
         itemStyle: { color: '#9F0000' }
       },
       {
@@ -109,7 +124,7 @@ export class Dashboard {
           fontSize: 12,
           color: '#fff'
         },
-        data: [180, 220, 160, 190, 210],
+        data: this.imageInfo.rescan,
         itemStyle: { color: '#EB6A6A' }
       },
       {
@@ -136,7 +151,7 @@ export class Dashboard {
             formatter: (p) => Number(p.value) < 25 ? `${p.value}` : ''
           }
         },
-        data: [120, 145, 23, 48, 90],
+        data: this.imageInfo.failed,
         itemStyle: { color: 'red' }
       },
       {
@@ -154,7 +169,7 @@ export class Dashboard {
           fontSize: 12,
           color: '#fff',
         },
-        data: [127, 44, 72, 69, 86],
+        data: this.imageInfo.notAnalyzed,
         itemStyle: { color: '#B2B1BD', borderRadius: [8, 8, 0, 0] }
       }
     ]
@@ -216,13 +231,13 @@ export class Dashboard {
         emphasis: { focus: 'self' },
         label: {
           show: true,
-          position: 'top',
+          position: 'insideBottom',
           fontSize: 12,
-          color: '#000',
+          color: '#fff',
           // fontWeight: 400
         },
         // labelLayout: { hideOverlap: true },
-        data: [60, 100, 90, 140, 130],
+        data: this.imageInfo.reprocess,
         itemStyle: { color: '#9F0000' ,borderRadius:[8,8,0,0]}
       },
       {
@@ -235,14 +250,69 @@ export class Dashboard {
         emphasis: { focus: 'self' },
         label: {
           show: true,
-          position: 'top',
+          position: 'insideBottom',
           fontSize: 12,
-          color: '#000'
+          color: '#fff'
         },
-        data: [180, 220, 160, 190, 210],
+        data: this.imageInfo.rescan,
         itemStyle: { color: '#EB6A6A', borderRadius:[8,8,0,0] }
       },
 
     ]
   };
+  pieChartOption:EChartsOption={
+    tooltip:{
+      trigger:'item',
+      // axisPointer:{
+      //   type:'shadow'
+      // },
+    },
+    legend: {
+      bottom: 0,
+      left:'center',
+      orient: 'horizontal',
+      icon:'circle'
+      // data:['Accepted']
+    },
+    grid: {
+      top:10,
+      left: 10,
+      right: 10,
+      bottom: 40,
+      containLabel: true
+    },
+
+    series:[
+      {
+        name:'Overall Analysis',
+        type:'pie',
+        radius:['30%','70%'],
+        avoidLabelOverlap: false,
+        itemStyle:{
+          borderRadius:8,
+          borderColor:'#fff',
+          borderWidth:2
+        },
+        label:{show:true, formatter: '{b}: {c}'},
+        data:[
+          {name:'Accepted', value:this.sum('accepted'),itemStyle:{color:this.colors.accepted}},
+          {name:'Reprocess', value:this.sum('reprocess'),itemStyle:{color:this.colors.reprocess}},
+          {name:'Rescan', value:this.sum('rescan'),itemStyle:{color:this.colors.rescan}},
+          {name:'Failed', value:this.sum('failed'),itemStyle:{color:this.colors.failed}},
+          {name:'Not Analyzed', value:this.sum('notAnalyzed'),itemStyle:{color:this.colors.notAnalyzed}},
+
+        ]
+
+      }
+
+    ]
+  }
+
+  private sum(key:string):number {  
+    const arr = this.imageInfo[key] ?? [];
+    if(key in this.sumCache && this.sumCache[key] !== undefined) return this.sumCache[key];
+    const sum =  arr.reduce((acc:number,curr:number):number=> acc+curr,0);
+    this.sumCache[key] = sum
+    return sum;  
+  }
 }
