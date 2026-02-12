@@ -5,10 +5,10 @@ import {  provideEchartsCore } from 'ngx-echarts';
 // import echarts core
 import * as echarts from 'echarts/core';
 // import necessary echarts components
-import { BarChart, PieChart, ScatterChart } from 'echarts/charts';
-import { GridComponent, LegendComponent, TitleComponent, TooltipComponent } from 'echarts/components';
+import { BarChart, LineChart, PieChart, ScatterChart } from 'echarts/charts';
+import { DataZoomComponent, GridComponent, LegendComponent, TitleComponent, TooltipComponent } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
-echarts.use([BarChart, GridComponent, CanvasRenderer, LegendComponent, TitleComponent, TooltipComponent, PieChart,ScatterChart]);
+echarts.use([BarChart, GridComponent, CanvasRenderer, LegendComponent, TitleComponent, TooltipComponent, PieChart,ScatterChart, DataZoomComponent, LineChart]);
 
 @Component({
   selector: 'app-root',

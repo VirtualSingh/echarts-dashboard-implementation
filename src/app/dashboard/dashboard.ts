@@ -3,6 +3,8 @@ import { NgxEchartsDirective } from 'ngx-echarts';
 import { CommonModule } from '@angular/common';
 import type { EChartsOption } from 'echarts';
 import { scatterData } from './scatterData';
+import * as echarts from 'echarts/core';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -176,6 +178,332 @@ export class Dashboard {
     ]
   };
 
+  stackedAreaChartOption: EChartsOption = {
+    // title: {
+    //   text: 'Monthly Sales (Stacked Bar)',
+    //   left: 'center',
+      
+    // },
+
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'cross',
+        // shadowStyle:{
+        //   width:'30%'
+        // }
+      }
+    },
+
+    legend: {
+      bottom: 0,
+      left:'center',
+      orient: 'horizontal',
+      icon:'circle'
+      // data:['Accepted']
+    },
+
+    grid: {
+      top:10,
+      left: 10,
+      right: 10,
+      bottom: 40,
+      containLabel: true
+    },
+
+    xAxis: {
+      type: 'category',
+      boundaryGap: false,
+      data: ['Jan', 'Feb', 'Mar', 'Apr', 'May']
+    },
+
+    yAxis: {
+      type: 'value',
+      axisLine: { show: true },
+      axisTick: { show: false }
+    },
+
+    series: [
+      {
+        name: 'Accepted',
+        type: 'line',
+        stack: 'total',
+        areaStyle:{},
+        smooth: true,
+        // barMinWidth: 30,
+        // barWidth:20,
+        // barMaxWidth: 40,
+        // barCategoryGap:'30%',
+        emphasis: { focus: 'series' },
+        // label: {
+        //   show: true,
+        //   position: 'insideTop',
+        //   fontSize: 12,
+        //   color: '#000',
+
+        // },
+        data: this.imageInfo.accepted,
+        itemStyle: { color: '#3594CC' }
+      },
+      {
+        name: 'Reprocess',
+        type: 'line',
+        stack: 'total',
+        areaStyle:{},
+        smooth: true,
+        // barMinWidth: 30,
+        // barWidth:20,
+        // barMaxWidth: 40,
+        // barCategoryGap:'30%',
+        emphasis: { focus: 'series' },
+        // label: {
+        //   show: true,
+        //   position: 'insideTop',
+        //   fontSize: 12,
+        //   color: '#000',
+        //   // fontWeight: 400
+        // },
+        // labelLayout: { hideOverlap: true },
+        data: this.imageInfo.reprocess,
+        itemStyle: { color: '#9F0000' }
+      },
+      {
+        name: 'Rescan',
+        type: 'line',
+        stack: 'total',
+        areaStyle:{},
+        smooth: true,
+        // barMinWidth: 30,
+        // barWidth:20,
+        // barMaxWidth: 40,
+        // barCategoryGap:'30%',
+        emphasis: { focus: 'series' },
+        // label: {
+        //   show: true,
+        //   position: 'insideTop',
+        //   fontSize: 12,
+        //   color: '#000'
+        // },
+        data: this.imageInfo.rescan,
+        itemStyle: { color: '#EB6A6A' }
+      },
+      {
+        name: 'Failed',
+        type: 'line',
+        stack: 'total',
+        areaStyle:{},
+        smooth: true,
+        // barMinWidth: 30,
+        // barWidth:20,
+        // barMaxWidth: 40,
+        // barCategoryGap:'30%',
+        // label: {
+        //   show: true,
+        //   position: 'insideTop',
+        //   fontSize: 12,
+        //   color: '#000',
+        //   formatter: (p) => Number(p.value) >= 26 ? `${p.value}` : ''
+        // },
+        emphasis: {
+          focus: 'series',
+          // label: {
+          //   show: true,
+          //   position:'right',
+          //   color:'#000',
+          //   formatter: (p) => Number(p.value) < 25 ? `${p.value}` : ''
+          // }
+        },
+        data: this.imageInfo.failed,
+        itemStyle: { color: 'red' }
+      },
+      {
+        name: 'Not Analyzed',
+        type: 'line',
+        stack: 'total',
+        smooth: true,
+        // barMinWidth: 30,
+        // barWidth:30,
+        // barMaxWidth: 40,
+        // barCategoryGap:'30%',
+        areaStyle:{},
+        emphasis: { focus: 'series' },
+        // label: {
+        //   show: true,
+        //   position: 'insideTop',
+        //   fontSize: 12,
+        //   color: '#000',
+        // },
+        data: this.imageInfo.notAnalyzed,
+        itemStyle: { color: '#B2B1BD', borderRadius: [8, 8, 0, 0] }
+      }
+    ]
+  };
+
+  stackedComboChartOption: EChartsOption = {
+    tooltip: {
+      trigger: 'item',
+      // axisPointer: { type: 'shadow' }
+    },
+  
+    legend: {
+      bottom: 0,
+      left: 'center',
+      icon: 'circle'
+    },
+  
+    grid: {
+      top: 10,
+      left: 0,
+      right: 0,
+      bottom: 40,
+      containLabel: true
+    },
+  
+    xAxis: {
+      type: 'category',
+      data: ['Scanner 1', 'Scanner 2', 'Scanner 3', 'Scanner 4', 'Scanner 5'],
+      boundaryGap: true   // ✔ Center bars & dots
+    },
+  
+    yAxis: {
+      type: 'value'
+    },
+  
+    series: [
+      // ==== AREA (BACKGROUND) ====
+      {
+        name: 'Accepted',
+        type: 'line',
+        stack: 'area',
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 8,
+        lineStyle: { width: 2 },
+        areaStyle: { opacity: 0.2 ,
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: this.colors.accepted },
+          { offset: 1, color: 'rgba(255,255,255,0)' }
+        ])},
+        data: this.imageInfo.accepted,
+        itemStyle: { color: this.colors.accepted },
+        z: 1
+      },
+      {
+        name: 'Reprocess',
+        type: 'line',
+        stack: 'area',
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 8,
+        lineStyle: { width: 2 },
+        areaStyle: { opacity: 0.2,    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: this.colors.reprocess },
+          { offset: 1, color: 'rgba(255,255,255,0)' }
+        ]) },
+        data: this.imageInfo.reprocess,
+        itemStyle: { color: this.colors.reprocess },
+        z: 1
+      },
+      {
+        name: 'Rescan',
+        type: 'line',
+        stack: 'area',
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 8,
+        lineStyle: { width: 2 },
+        areaStyle: { opacity: 0.2 ,    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: this.colors.rescan },
+          { offset: 1, color: 'rgba(255,255,255,0)' }
+        ])},
+        data: this.imageInfo.rescan,
+        itemStyle: { color: this.colors.rescan },
+        z: 1
+      },
+      {
+        name: 'Failed',
+        type: 'line',
+        stack: 'area',
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 8,
+        lineStyle: { width: 2 },
+        areaStyle: { opacity: 0.2 ,    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: this.colors.failed },
+          { offset: 1, color: 'rgba(255,255,255,0)' }
+        ])},
+        data: this.imageInfo.failed,
+        itemStyle: { color: this.colors.failed },
+        z: 1
+      },
+      {
+        name: 'Not Analyzed',
+        type: 'line',
+        stack: 'area',
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 8,
+        lineStyle: { width: 2 },
+        areaStyle: { opacity: 0.2,    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          { offset: 0, color: this.colors.notAnalyzed },
+          { offset: 1, color: 'rgba(255,255,255,0)' }
+        ]) },
+        data: this.imageInfo.notAnalyzed,
+        itemStyle: { color: this.colors.notAnalyzed },
+        z: 1
+      },
+  
+      // ==== BAR (FOREGROUND) ====
+      {
+        name: 'Accepted',
+        type: 'bar',
+        stack: 'bar',
+        barWidth: 28,
+        data: this.imageInfo.accepted,
+        // emphasis:{focus:'self'},
+        itemStyle: { color: this.colors.accepted },
+        z: 10
+      },
+      {
+        name: 'Reprocess',
+        type: 'bar',
+        stack: 'bar',
+        barWidth: 28,
+        data: this.imageInfo.reprocess,
+        itemStyle: { color: this.colors.reprocess },
+        z: 10
+      },
+      {
+        name: 'Rescan',
+        type: 'bar',
+        stack: 'bar',
+        barWidth: 28,
+        data: this.imageInfo.rescan,
+        itemStyle: { color: this.colors.rescan },
+        z: 10
+      },
+      {
+        name: 'Failed',
+        type: 'bar',
+        stack: 'bar',
+        barWidth: 28,
+        data: this.imageInfo.failed,
+        itemStyle: { color: this.colors.failed },
+        z: 10
+      },
+      {
+        name: 'Not Analyzed',
+        type: 'bar',
+        stack: 'bar',
+        barWidth: 28,
+        data: this.imageInfo.notAnalyzed,
+        itemStyle: { color: this.colors.notAnalyzed },
+        z: 10
+      }
+    ]
+  };
+  
+  
   groupedBarChartOption: EChartsOption = {
     // title: {
     //   text: 'Monthly Sales (Stacked Bar)',
