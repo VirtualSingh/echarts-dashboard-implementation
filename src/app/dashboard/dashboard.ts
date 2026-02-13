@@ -28,6 +28,18 @@ export class Dashboard {
     notAnalyzed:'#B2B1BD'
   }
   private sumCache: Record<string, number> = {};
+  
+  // Calculate statistics for header
+  get totalProcessed(): number {
+    return this.sum('accepted') + this.sum('reprocess') + this.sum('rescan') + 
+           this.sum('failed') + this.sum('notAnalyzed');
+  }
+  
+  get successRate(): number {
+    const accepted = this.sum('accepted');
+    const total = this.totalProcessed;
+    return total > 0 ? Math.round((accepted / total) * 100) : 0;
+  }
   stackedBarChartOption: EChartsOption = {
     // title: {
     //   text: 'Monthly Sales (Stacked Bar)',

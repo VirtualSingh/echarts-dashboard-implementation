@@ -1,14 +1,113 @@
-<div class="container" style=" padding:16px;">
-    <div echarts [options]="stackedBarChartOption" class="chart-wrapper"  style="height: 400px; width: 100%;border:1px solid #000;margin-bottom: 8px;padding:8px;" [autoResize]="true"></div>
-    
-    <div echarts [options]="stackedAreaChartOption" class="chart-wrapper"  style="height: 400px; width: 100%;border:1px solid #000;margin-bottom: 8px;padding:8px;" [autoResize]="true"></div>
+<div class="dashboard-container">
+  <!-- Dashboard Header -->
+  <header class="dashboard-header">
+    <div class="header-content">
+      <h1 class="dashboard-title">Analytics Dashboard</h1>
+      <p class="dashboard-subtitle">Image Processing Performance Metrics</p>
+    </div>
+    <div class="header-stats">
+      <div class="stat-card">
+        <div class="stat-value">{{totalProcessed}}</div>
+        <div class="stat-label">Total Processed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{successRate}}%</div>
+        <div class="stat-label">Success Rate</div>
+      </div>
+    </div>
+  </header>
 
-    <div echarts [options]="stackedComboChartOption" class="chart-wrapper"  style="height: 400px; width: 100%;border:1px solid #000;margin-bottom: 8px;padding:8px;" [autoResize]="true"></div>
-    
-    <div echarts [options]="groupedBarChartOption" class="chart-wrapper"  style="height: 400px; width: 100%;border:1px solid #000;margin-bottom: 8px;padding:8px;" [autoResize]="true"></div>
-    <div echarts [options]="fullDoughnutChartOption" class="chart-wrapper"  style="height: 400px; width: 100%;border:1px solid #000;margin-bottom: 8px;padding:8px;" [autoResize]="true"></div>
-    <div echarts [options]="fullDoughnutRoseChartOption" class="chart-wrapper"  style="height: 400px; width: 100%;border:1px solid #000;margin-bottom: 8px;padding:8px;" [autoResize]="true"></div>
-    <div echarts [options]="halfDoughnutRoseChartOption" class="chart-wrapper"  style="height: 400px; width: 100%;border:1px solid #000;margin-bottom: 8px;padding:8px;" [autoResize]="true"></div>
-    <div echarts [options]="bubbleChartOption" class="chart-wrapper"  style="height: 400px; width: 100%;border:1px solid #000;margin-bottom: 8px;padding:8px;" [autoResize]="true"></div>
+  <!-- Charts Grid -->
+  <div class="charts-grid ">
+    <!-- Stacked Bar Chart -->
+    <div class="chart-card chart-card-xlarge">
+      <div class="chart-header">
+        <h3 class="chart-title">Monthly Processing Status</h3>
+        <span class="chart-subtitle">Stacked Bar View</span>
+      </div>
+      <div class="chart-content">
+        <div echarts [options]="stackedBarChartOption" class="chart-wrapper" [autoResize]="true"></div>
+      </div>
+    </div>
 
+    <!-- Stacked Area Chart -->
+    <div class="chart-card ">
+      <div class="chart-header">
+        <h3 class="chart-title">Trends Over Time</h3>
+        <span class="chart-subtitle">Area Chart Analysis</span>
+      </div>
+      <div class="chart-content">
+        <div echarts [options]="stackedAreaChartOption" class="chart-wrapper" [autoResize]="true"></div>
+      </div>
+    </div>
+        <!-- Full Doughnut Chart -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3 class="chart-title">Status Distribution</h3>
+        <span class="chart-subtitle">Doughnut Chart</span>
+      </div>
+      <div class="chart-content">
+        <div echarts [options]="fullDoughnutChartOption" class="chart-wrapper" [autoResize]="true"></div>
+      </div>
+    </div>
+
+        <!-- Grouped Bar Chart -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3 class="chart-title">Issue Comparison</h3>
+        <span class="chart-subtitle">Reprocess vs Rescan</span>
+      </div>
+      <div class="chart-content">
+        <div echarts [options]="groupedBarChartOption" class="chart-wrapper" [autoResize]="true"></div>
+      </div>
+    </div>
+
+    <!-- Stacked Combo Chart -->
+    <div class="chart-card chart-card-large">
+      <div class="chart-header">
+        <h3 class="chart-title">Scanner Performance Overview</h3>
+        <span class="chart-subtitle">Combined Bar & Area Analysis</span>
+      </div>
+      <div class="chart-content">
+        <div echarts [options]="stackedComboChartOption" class="chart-wrapper" [autoResize]="true"></div>
+      </div>
+    </div>
+
+
+
+
+
+    <!-- Full Doughnut Rose Chart -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3 class="chart-title">Status Breakdown</h3>
+        <span class="chart-subtitle">Rose Chart View</span>
+      </div>
+      <div class="chart-content">
+        <div echarts [options]="fullDoughnutRoseChartOption" class="chart-wrapper" [autoResize]="true"></div>
+      </div>
+    </div>
+
+    <!-- Half Doughnut Rose Chart -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3 class="chart-title">Overall Analysis</h3>
+        <span class="chart-subtitle">Semi-Circle Rose Chart</span>
+      </div>
+      <div class="chart-content">
+        <div echarts [options]="halfDoughnutRoseChartOption" class="chart-wrapper" [autoResize]="true"></div>
+      </div>
+    </div>
+
+    <!-- Bubble Chart -->
+    <div class="chart-card chart-card-large">
+      <div class="chart-header">
+        <h3 class="chart-title">Data Point Distribution</h3>
+        <span class="chart-subtitle">Scatter Plot Analysis</span>
+      </div>
+      <div class="chart-content">
+        <div echarts [options]="bubbleChartOption" class="chart-wrapper" [autoResize]="true"></div>
+      </div>
+    </div>
+  </div>
 </div>
