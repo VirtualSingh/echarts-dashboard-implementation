@@ -1,9 +1,19 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, inject, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { NgxEchartsDirective } from 'ngx-echarts';
 import { CommonModule } from '@angular/common';
 import type { EChartsOption } from 'echarts';
 import { scatterData } from './scatterData';
 import * as echarts from 'echarts/core';
+
+interface DashboardCard {
+  id: string;
+  title: string;
+  subtitle: string;
+  option: EChartsOption;
+  span: 1 | 2 | 3;
+  expanded: boolean;
+  order: number;
+}
 
 
 @Component({
@@ -11,8 +21,17 @@ import * as echarts from 'echarts/core';
   imports: [NgxEchartsDirective, CommonModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Dashboard {
+export class Dashboard implements OnInit {
+  cards: DashboardCard[] = [];
+  private chartInstances = new Map<string, any>();
+
+  @ViewChildren('chartGridItem')
+  chartGridItems!: QueryList<ElementRef<HTMLElement>>;
+
+  private cdr = inject(ChangeDetectorRef);
+
   imageInfo:any={
     accepted:[120, 200, 150, 80, 70],
     reprocess:[60, 100, 90, 140, 130],
@@ -28,6 +47,226 @@ export class Dashboard {
     notAnalyzed:'#B2B1BD'
   }
   private sumCache: Record<string, number> = {};
+
+  ngOnInit(): void {
+    this.cards = this.createCards();
+  }
+
+  private createCards(): DashboardCard[] {
+    return [
+      {
+        id: 'stacked-bar',
+        title: 'Monthly Processing Status',
+        subtitle: 'Stacked Bar View',
+        option: this.stackedBarChartOption,
+        span: 3,
+        expanded: true,
+        order: 1
+      },
+      {
+        id: 'stacked-area',
+        title: 'Trends Over Time',
+        subtitle: 'Area Chart Analysis',
+        option: this.stackedAreaChartOption,
+        span: 1,
+        expanded: false,
+        order: 2
+      },
+      {
+        id: 'full-doughnut',
+        title: 'Status Distribution',
+        subtitle: 'Doughnut Chart',
+        option: this.fullDoughnutChartOption,
+        span: 1,
+        expanded: false,
+        order: 3
+      },
+      {
+        id: 'grouped-bar',
+        title: 'Issue Comparison',
+        subtitle: 'Reprocess vs Rescan',
+        option: this.groupedBarChartOption,
+        span: 1,
+        expanded: false,
+        order: 4
+      },
+      {
+        id: 'stacked-combo',
+        title: 'Scanner Performance Overview',
+        subtitle: 'Combined Bar & Area Analysis',
+        option: this.stackedComboChartOption,
+        span: 2,
+        expanded: false,
+        order: 5
+      },
+      {
+        id: 'full-doughnut-rose',
+        title: 'Status Breakdown',
+        subtitle: 'Rose Chart View',
+        option: this.fullDoughnutRoseChartOption,
+        span: 1,
+        expanded: false,
+        order: 6
+      },
+      {
+        id: 'half-doughnut-rose',
+        title: 'Overall Analysis',
+        subtitle: 'Semi-Circle Rose Chart',
+        option: this.halfDoughnutRoseChartOption,
+        span: 1,
+        expanded: false,
+        order: 7
+      },
+      {
+        id: 'bubble-chart',
+        title: 'Data Point Distribution',
+        subtitle: 'Scatter Plot Analysis',
+        option: this.bubbleChartOption,
+        span: 2,
+        expanded: false,
+        order: 8
+      }
+    ];
+  }
+
+  async onExpand(card: DashboardCard): Promise<void> {
+    let isNowExpanded = false;
+
+    await this.runFlip(() => {
+      isNowExpanded = this.toggleExpand(card);
+      this.repackCards();
+    });
+
+    this.queueChartResize(card.id);
+
+    if (isNowExpanded) {
+      this.focusCard(card.order);
+    }
+  }
+
+  onChartInit(cardId: string, chart: any): void {
+    this.chartInstances.set(cardId, chart);
+  }
+
+  private toggleExpand(card: DashboardCard): boolean {
+    card.expanded = !card.expanded;
+    return card.expanded;
+  }
+
+  private repackCards(): void {
+    const expanded = this.cards.filter(card => card.expanded).sort((a, b) => a.order - b.order);
+    const normal = this.cards.filter(card => !card.expanded).sort((a, b) => a.order - b.order);
+
+    const result: DashboardCard[] = [];
+    let normalIndex = 0;
+
+    while (normalIndex < normal.length || expanded.length) {
+      if (expanded.length) {
+        result.push(expanded.shift()!);
+        continue;
+      }
+
+      result.push(normal[normalIndex++]);
+
+      if (normalIndex < normal.length) {
+        result.push(normal[normalIndex++]);
+      }
+    }
+
+    this.cards = [...result];
+
+    if (this.cards.every(card => !card.expanded)) {
+      this.cards.sort((a, b) => a.order - b.order);
+    }
+  }
+
+  private runFlip(mutator: () => void): Promise<void> {
+    return new Promise(resolve => {
+      const firstRects = new Map<HTMLElement, DOMRect>();
+
+      this.chartGridItems.forEach(item => {
+        firstRects.set(item.nativeElement, item.nativeElement.getBoundingClientRect());
+      });
+
+      mutator();
+      this.cdr.detectChanges();
+
+      requestAnimationFrame(() => {
+        this.chartGridItems.forEach(item => {
+          const el = item.nativeElement;
+          const first = firstRects.get(el);
+          const last = el.getBoundingClientRect();
+
+          if (!first) {
+            return;
+          }
+
+          const deltaX = Math.round(first.left - last.left);
+          const deltaY = Math.round(first.top - last.top);
+
+          if (deltaX || deltaY) {
+            el.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+            el.style.transition = 'transform 0s';
+
+            requestAnimationFrame(() => {
+              el.style.transition = 'transform 300ms ease';
+              el.style.transform = '';
+            });
+          }
+        });
+
+        resolve();
+      });
+    });
+  }
+
+  private queueChartResize(cardId: string): void {
+    const chart = this.chartInstances.get(cardId);
+
+    if (!chart) {
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        chart.resize({ silent: true });
+      });
+    });
+  }
+
+  private focusCard(id: number | string): void {
+    const element = this.chartGridItems
+      .find(ref => ref.nativeElement.dataset['id'] == id)
+      ?.nativeElement;
+
+    if (!element) {
+      return;
+    }
+
+    const previousTransform = element.style.transform;
+    element.style.transform = 'none';
+    const rect = element.getBoundingClientRect();
+    element.style.transform = previousTransform;
+
+    const topVisible = rect.top >= 0 && rect.top <= window.innerHeight;
+    const bottomVisible = rect.bottom <= window.innerHeight;
+    const fullyVisible = topVisible && bottomVisible;
+
+    if (!fullyVisible) {
+      const absoluteTop = window.scrollY + rect.top;
+      const offset = 16;
+
+      window.scrollTo({
+        top: absoluteTop - offset,
+        behavior: 'smooth'
+      });
+    }
+
+    element.classList.add('focused');
+    setTimeout(() => {
+      element.classList.remove('focused');
+    }, 700);
+  }
   
   // Calculate statistics for header
   get totalProcessed(): number {

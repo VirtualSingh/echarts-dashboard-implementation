@@ -18,96 +18,35 @@
   </header>
 
   <!-- Charts Grid -->
-  <div class="charts-grid ">
-    <!-- Stacked Bar Chart -->
-    <div class="chart-card chart-card-xlarge">
-      <div class="chart-header">
-        <h3 class="chart-title">Monthly Processing Status</h3>
-        <span class="chart-subtitle">Stacked Bar View</span>
+  <div class="charts-grid">
+    @for (card of cards; track card.id) {
+      <div
+        #chartGridItem
+        class="chart-card"
+        [class.chart-card-large]="card.span === 2 && !card.expanded"
+        [class.chart-card-xlarge]="card.span === 3 && !card.expanded"
+        [class.expanded]="card.expanded"
+        [attr.data-id]="card.order"
+      >
+        <div class="chart-header">
+          <div class="chart-heading">
+            <h3 class="chart-title">{{ card.title }}</h3>
+            <span class="chart-subtitle">{{ card.subtitle }}</span>
+          </div>
+          <button type="button" class="chart-toggle" (click)="onExpand(card)">
+            {{ card.expanded ? 'Collapse' : 'Expand' }}
+          </button>
+        </div>
+        <div class="chart-content">
+          <div
+            echarts
+            [options]="card.option"
+            class="chart-wrapper"
+            [class.chart-wrapper-expanded]="card.expanded"
+            (chartInit)="onChartInit(card.id, $event)"
+          ></div>
+        </div>
       </div>
-      <div class="chart-content">
-        <div echarts [options]="stackedBarChartOption" class="chart-wrapper" [autoResize]="true"></div>
-      </div>
-    </div>
-
-    <!-- Stacked Area Chart -->
-    <div class="chart-card ">
-      <div class="chart-header">
-        <h3 class="chart-title">Trends Over Time</h3>
-        <span class="chart-subtitle">Area Chart Analysis</span>
-      </div>
-      <div class="chart-content">
-        <div echarts [options]="stackedAreaChartOption" class="chart-wrapper" [autoResize]="true"></div>
-      </div>
-    </div>
-        <!-- Full Doughnut Chart -->
-    <div class="chart-card">
-      <div class="chart-header">
-        <h3 class="chart-title">Status Distribution</h3>
-        <span class="chart-subtitle">Doughnut Chart</span>
-      </div>
-      <div class="chart-content">
-        <div echarts [options]="fullDoughnutChartOption" class="chart-wrapper" [autoResize]="true"></div>
-      </div>
-    </div>
-
-        <!-- Grouped Bar Chart -->
-    <div class="chart-card">
-      <div class="chart-header">
-        <h3 class="chart-title">Issue Comparison</h3>
-        <span class="chart-subtitle">Reprocess vs Rescan</span>
-      </div>
-      <div class="chart-content">
-        <div echarts [options]="groupedBarChartOption" class="chart-wrapper" [autoResize]="true"></div>
-      </div>
-    </div>
-
-    <!-- Stacked Combo Chart -->
-    <div class="chart-card chart-card-large">
-      <div class="chart-header">
-        <h3 class="chart-title">Scanner Performance Overview</h3>
-        <span class="chart-subtitle">Combined Bar & Area Analysis</span>
-      </div>
-      <div class="chart-content">
-        <div echarts [options]="stackedComboChartOption" class="chart-wrapper" [autoResize]="true"></div>
-      </div>
-    </div>
-
-
-
-
-
-    <!-- Full Doughnut Rose Chart -->
-    <div class="chart-card">
-      <div class="chart-header">
-        <h3 class="chart-title">Status Breakdown</h3>
-        <span class="chart-subtitle">Rose Chart View</span>
-      </div>
-      <div class="chart-content">
-        <div echarts [options]="fullDoughnutRoseChartOption" class="chart-wrapper" [autoResize]="true"></div>
-      </div>
-    </div>
-
-    <!-- Half Doughnut Rose Chart -->
-    <div class="chart-card">
-      <div class="chart-header">
-        <h3 class="chart-title">Overall Analysis</h3>
-        <span class="chart-subtitle">Semi-Circle Rose Chart</span>
-      </div>
-      <div class="chart-content">
-        <div echarts [options]="halfDoughnutRoseChartOption" class="chart-wrapper" [autoResize]="true"></div>
-      </div>
-    </div>
-
-    <!-- Bubble Chart -->
-    <div class="chart-card chart-card-large">
-      <div class="chart-header">
-        <h3 class="chart-title">Data Point Distribution</h3>
-        <span class="chart-subtitle">Scatter Plot Analysis</span>
-      </div>
-      <div class="chart-content">
-        <div echarts [options]="bubbleChartOption" class="chart-wrapper" [autoResize]="true"></div>
-      </div>
-    </div>
+    }
   </div>
 </div>
