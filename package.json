@@ -4,7 +4,9 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build"
+    "build": "ng build",
+    "build:gh-pages": "ng build --configuration production --base-href /echarts-dashboard-implementation/",
+    "deploy": "npm run build:gh-pages && npx angular-cli-ghpages --dir=dist/demo/browser"
   },
   "dependencies": {
     "@angular/animations": "^21.0.3",
@@ -24,6 +26,7 @@
     "@angular/build": "^21.0.2",
     "@angular/cli": "^21.0.2",
     "@angular/compiler-cli": "^21.0.3",
+    "angular-cli-ghpages": "^2.0.3",
     "typescript": "^5.9.3"
   }
 }
