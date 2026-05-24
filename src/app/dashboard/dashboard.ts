@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, inject, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { NgxEchartsDirective } from 'ngx-echarts';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import type { EChartsOption } from 'echarts';
 import { scatterData } from './scatterData';
 import * as echarts from 'echarts/core';
@@ -25,12 +25,16 @@ interface DashboardCard {
 })
 export class Dashboard implements OnInit {
   cards: DashboardCard[] = [];
+  isDarkTheme = true;
+  chartTheme: string | Record<string, never> = 'dark';
+  renderCharts = true;
   private chartInstances = new Map<string, any>();
 
   @ViewChildren('chartGridItem')
   chartGridItems!: QueryList<ElementRef<HTMLElement>>;
 
   private cdr = inject(ChangeDetectorRef);
+  private document = inject(DOCUMENT);
 
   imageInfo:any={
     accepted:[120, 200, 150, 80, 70],
@@ -50,6 +54,39 @@ export class Dashboard implements OnInit {
 
   ngOnInit(): void {
     this.cards = this.createCards();
+    this.applyThemeClass();
+  }
+
+  async onToggleTheme(): Promise<void> {
+    this.isDarkTheme = !this.isDarkTheme;
+    this.chartTheme = this.isDarkTheme ? 'dark' : {};
+    this.applyThemeClass();
+
+    this.chartInstances.clear();
+    this.renderCharts = false;
+    this.cdr.detectChanges();
+
+    await new Promise<void>(resolve => {
+      requestAnimationFrame(() => {
+        this.renderCharts = true;
+        this.cdr.detectChanges();
+
+        requestAnimationFrame(() => {
+          this.resizeAllCharts();
+          resolve();
+        });
+      });
+    });
+  }
+
+  private applyThemeClass(): void {
+    this.document.body.classList.toggle('theme-dark', this.isDarkTheme);
+  }
+
+  private resizeAllCharts(): void {
+    this.chartInstances.forEach(chart => {
+      chart.resize({ silent: true });
+    });
   }
 
   private createCards(): DashboardCard[] {

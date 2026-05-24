@@ -1,21 +1,37 @@
-<div class="dashboard-container">
+<div class="dashboard-container" [class.theme-dark]="isDarkTheme">
   <!-- Dashboard Header -->
   <header class="dashboard-header">
-    <div class="header-content">
+    <div class="dashboard-hero">      
       <h1 class="dashboard-title">Analytics Dashboard</h1>
-      <p class="dashboard-subtitle">Image Processing Performance Metrics</p>
+      <p class="dashboard-subtitle">Image Processing Performance Metrics with expandable chart cards, FLIP motion, and a presentation-grade layout.</p>
+      <div class="dashboard-pills">
+        <span class="dashboard-pill">Expandable cards</span>
+        <span class="dashboard-pill">FLIP animation</span>
+        <span class="dashboard-pill">Angular + ECharts</span>
+      </div>
     </div>
     <div class="header-stats">
+      <button type="button" class="theme-toggle" (click)="onToggleTheme()">
+        {{ isDarkTheme ? 'Switch to light mode' : 'Switch to dark mode' }}
+      </button>
       <div class="stat-card">
         <div class="stat-value">{{totalProcessed}}</div>
-        <div class="stat-label">Total Processed</div>
+        <div class="stat-label">Total processed</div>
       </div>
       <div class="stat-card">
         <div class="stat-value">{{successRate}}%</div>
-        <div class="stat-label">Success Rate</div>
+        <div class="stat-label">Success rate</div>
       </div>
     </div>
   </header>
+
+  <section class="section-header">
+    <div>
+      <span class="section-eyebrow">Live insights</span>
+      <h2 class="section-title">Interactive chart collection</h2>
+    </div>
+    <p class="section-copy">Expand any tile to focus attention on a single chart while the layout repacks smoothly around it.</p>
+  </section>
 
   <!-- Charts Grid -->
   <div class="charts-grid">
@@ -30,6 +46,7 @@
       >
         <div class="chart-header">
           <div class="chart-heading">
+            <span class="chart-badge">Card {{ card.order.toString().padStart(2, '0') }}</span>
             <h3 class="chart-title">{{ card.title }}</h3>
             <span class="chart-subtitle">{{ card.subtitle }}</span>
           </div>
@@ -38,13 +55,16 @@
           </button>
         </div>
         <div class="chart-content">
-          <div
-            echarts
-            [options]="card.option"
-            class="chart-wrapper"
-            [class.chart-wrapper-expanded]="card.expanded"
-            (chartInit)="onChartInit(card.id, $event)"
-          ></div>
+          @if (renderCharts) {
+            <div
+              echarts
+              [options]="card.option"
+              [theme]="chartTheme"
+              class="chart-wrapper"
+              [class.chart-wrapper-expanded]="card.expanded"
+              (chartInit)="onChartInit(card.id, $event)"
+            ></div>
+          }
         </div>
       </div>
     }
