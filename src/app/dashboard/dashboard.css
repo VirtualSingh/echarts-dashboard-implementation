@@ -433,7 +433,7 @@
 }
 
 .dashboard-container.theme-dark .chart-card {
-  background: linear-gradient(45deg, black, transparent, blue, red);
+ background: linear-gradient(45deg, #000000, transparent, #0000ff, #ff000099);
   border-color: rgba(148, 163, 184, 0.2);
   box-shadow: 0 18px 44px rgba(2, 6, 23, 0.5);
 }

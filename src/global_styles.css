@@ -32,6 +32,6 @@ body.theme-dark {
   color: #0f172a;
 }
 canvas{
-
+border:1px solid rgba(148, 163, 184, 0.45) !important;
   border-radius: 12px !important;
 }
